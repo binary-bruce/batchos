@@ -80,8 +80,6 @@ pub fn rust_main() -> ! {
     );
     error!("[kernel] .bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
 
-    let _cx = trap::context::TrapContext::app_init_context(0, 0);
-
     trap::init();
     batch::init();
     batch::run_next_app();

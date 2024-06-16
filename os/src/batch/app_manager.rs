@@ -9,6 +9,8 @@ use super::MAX_APP_NUM;
 pub(crate) struct AppManager {
     pub num_app: usize,
     pub current_app: usize,
+    
+    /// the starting address of the apps
     pub app_start: [usize; MAX_APP_NUM + 1],
 }
 
@@ -33,6 +35,7 @@ impl AppManager {
         self.current_app += 1;
     }
 
+    /// load the app with app_id to the APP_BASE_ADDRESS adress, effectively overriding the previous app, if any
     pub unsafe fn load_app(&self, app_id: usize) {
         if app_id >= self.num_app {
             println!("All applications completed!");

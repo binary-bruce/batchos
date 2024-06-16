@@ -22,7 +22,7 @@ impl TrapContext {
     /// init the app context
     pub fn app_init_context(entry: usize, sp: usize) -> Self {
         let mut sstatus = sstatus::read();
-        // set previous previlege mode: user mode, used to jump from supervisor mode
+        // set previous privilege mode: user mode, used to jump from supervisor mode
         sstatus.set_spp(SPP::User);
 
         let mut cx = Self {
