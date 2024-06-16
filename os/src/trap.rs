@@ -21,6 +21,8 @@ use riscv::register::{
     stval, stvec,
 };
 
+use crate::syscall::syscall;
+
 /// Trap Context
 pub mod context;
 
@@ -43,7 +45,8 @@ pub(crate) fn trap_handler(cx: &mut TrapContext) -> &mut TrapContext {
 
     match scause.cause() {
         Trap::Exception(Exception::UserEnvCall) => {
-            ();
+            cx.sepc += 4; // move forward to next instruction
+            cx.x[10] = syscall(cx.x[17], [cx.x[10], cx.x[11], cx.x[12]]) as usize;
         }
         Trap::Exception(Exception::StoreFault) | Trap::Exception(Exception::StorePageFault) => {
             ();

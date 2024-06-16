@@ -23,6 +23,7 @@ mod lang_items;
 mod logging;
 mod sbi;
 
+pub mod syscall;
 pub mod trap;
 
 global_asm!(include_str!("entry.asm"));
