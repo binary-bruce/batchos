@@ -29,6 +29,7 @@ pub mod syscall;
 pub mod trap;
 
 global_asm!(include_str!("entry.asm"));
+global_asm!(include_str!("link_app.S"));
 
 /// clear BSS segment
 pub fn clear_bss() {
@@ -80,5 +81,8 @@ pub fn rust_main() -> ! {
     error!("[kernel] .bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
 
     let _cx = trap::context::TrapContext::app_init_context(0, 0);
-    sbi::shutdown(false);
+
+    trap::init();
+    batch::init();
+    batch::run_next_app();
 }
