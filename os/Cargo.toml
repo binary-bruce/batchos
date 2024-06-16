@@ -1,0 +1,11 @@
+[package]
+name = "os"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+log = "0.4.21"
+sbi-rt = { version = "0.0.3", features = ["legacy"] } # Runtime library for supervisors to call RISC-V Supervisor Binary Interface (RISC-V SBI)
+
+[profile.release]
+debug = true
