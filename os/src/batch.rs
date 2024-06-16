@@ -29,7 +29,7 @@ lazy_static! {
     static ref APP_MANAGER: UPSafeCell<AppManager> = unsafe {
         UPSafeCell::new({
             extern "C" {
-                fn _num_app();
+                fn _num_app(); // defined at link_app.S
             }
 
             let num_app_ptr = _num_app as usize as *const usize;
@@ -38,6 +38,7 @@ lazy_static! {
             let app_start_raw: &[usize] =
                 core::slice::from_raw_parts(num_app_ptr.add(1), num_app + 1);
             app_start[..=num_app].copy_from_slice(app_start_raw);
+
             AppManager {
                 num_app,
                 current_app: 0,
@@ -57,7 +58,7 @@ pub fn print_app_info() {
     APP_MANAGER.exclusive_access().print_app_info();
 }
 
-/// run next app
+/// run next app, switch from supervisor mode to user mode
 pub fn run_next_app() -> ! {
     let mut app_manager = APP_MANAGER.exclusive_access();
     let current_app = app_manager.get_current_app();
@@ -73,7 +74,7 @@ pub fn run_next_app() -> ! {
 
     unsafe {
         let ctx = KERNEL_STACK.push_context(TrapContext::app_init_context(
-            APP_BASE_ADDRESS,
+            APP_BASE_ADDRESS, // the entry point for all apps
             USER_STACK.get_sp(),
         )); // prepare context
         __restore(ctx as *const _ as usize); // switch to user space
