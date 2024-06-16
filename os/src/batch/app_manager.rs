@@ -9,7 +9,7 @@ use super::MAX_APP_NUM;
 pub(crate) struct AppManager {
     pub num_app: usize,
     pub current_app: usize,
-    
+
     /// the starting address of the apps
     pub app_start: [usize; MAX_APP_NUM + 1],
 }

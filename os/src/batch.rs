@@ -38,7 +38,7 @@ lazy_static! {
             let app_start_raw: &[usize] =
                 core::slice::from_raw_parts(num_app_ptr.add(1), num_app + 1);
             app_start[..=num_app].copy_from_slice(app_start_raw);
-            
+
             AppManager {
                 num_app,
                 current_app: 0,
