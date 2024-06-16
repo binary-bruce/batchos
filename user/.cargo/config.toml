@@ -1,0 +1,43 @@
+[env]
+LOG = "TRACE"
+
+# For cross compile. With this config, it's not necessary to add `--target` for `cargo build`.
+[build]
+target = "riscv64gc-unknown-none-elf"
+
+# 1. Specify linker script to generate the executable file that conforms to qemu's spec
+# 2. Retain fp so that compiler will keep it lest been optimised
+[target.riscv64gc-unknown-none-elf]
+rustflags = ["-Clink-arg=-Tsrc/linker.ld", "-Cforce-frame-pointers=yes"]
+
+# How does compiler handle the stack while calling a function
+
+# 开场
+# 为当前函数分配 64 字节的栈帧, sp(x2)
+# addi sp, sp, -64
+
+# 将 ra(x1) 和 fp(s0) 压栈保存
+# sd  ra, 56(sp)
+# sd  s0, 48(sp)
+# 更新 fp 为当前函数栈帧顶端地址
+# addi s0, sp, 64
+
+# 函数执行
+# 中间如果再调用了其他函数会修改 ra
+
+# 结尾
+# 恢复 ra 和 fp
+# ld  ra, 56(sp)
+# ld  s0, 48(sp)
+# 退栈
+# addi sp, sp, 64
+# 返回，使用 ret 指令或其他等价的实现方式
+# ret
+
+#         father stack frame
+# fp -->
+#         ra
+#         prev fp (function call link)
+#         callee saved (based on usage)
+#         local variables
+# sp -->
