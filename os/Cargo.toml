@@ -7,6 +7,7 @@ edition = "2021"
 log = "0.4.21"
 sbi-rt = { version = "0.0.3", features = ["legacy"] } # Runtime library for supervisors to call RISC-V Supervisor Binary Interface (RISC-V SBI)
 riscv = { git = "https://github.com/rcore-os/riscv", features = ["inline-asm"] }
+lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
 
 [profile.release]
 debug = true
