@@ -21,7 +21,7 @@ use riscv::register::{
     stval, stvec,
 };
 
-use crate::syscall::syscall;
+use crate::{batch::run_next_app, syscall::syscall};
 
 /// Trap Context
 pub mod context;
@@ -49,10 +49,12 @@ pub(crate) fn trap_handler(cx: &mut TrapContext) -> &mut TrapContext {
             cx.x[10] = syscall(cx.x[17], [cx.x[10], cx.x[11], cx.x[12]]) as usize;
         }
         Trap::Exception(Exception::StoreFault) | Trap::Exception(Exception::StorePageFault) => {
-            ();
+            println!("[kernel] PageFault in application, kernel killed it.");
+            run_next_app();
         }
         Trap::Exception(Exception::IllegalInstruction) => {
-            ();
+            println!("[kernel] IllegalInstruction in application, kernel killed it.");
+            run_next_app();
         }
         _ => {
             panic!(
