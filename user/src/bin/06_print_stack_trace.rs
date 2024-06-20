@@ -29,17 +29,20 @@ fn print_sum(left: i32, right: i32) {
 }
 
 fn print(_value: i32) {
-    print_stack_trace();
+    unsafe { print_stack_trace() };
 }
 
-fn print_stack_trace() {
-    let mut fp: usize = 0;
+unsafe fn print_stack_trace() {
+    let mut fp: *const usize;
     unsafe { asm!("mv {}, fp", out(reg) fp) };
 
-    while fp != 0 {
-        println!("fp = {:x}", fp);
+    println!("== Begin stack trace ==");
+    while fp != core::ptr::null() {
+        let saved_ra = *fp.sub(1);
+        let saved_fp = *fp.sub(2);
+        println!("ra = 0x{:016x}, fp = 0x{:016x}", saved_ra, saved_fp);
 
-        let fp_ptr: *const u64 = { unsafe { (fp as *const u64).offset(-2) } };
-        fp = unsafe { (*fp_ptr).try_into().unwrap() };
+        fp = saved_fp as *const usize
     }
+    println!("== End stack trace ==");
 }
