@@ -13,22 +13,27 @@ fn main() -> i32 {
 }
 
 fn foo() {
-    let _tmp = 0;
+    let tmp = 0;
+    println!("tmp {:p}", &tmp);
     bar();
 }
 
 fn bar() {
-    let _tmp1 = 1;
-    let _tmp2 = 2;
+    let tmp1 = 1;
+    let tmp2 = 2;
+    println!("tmp1 {:p}", &tmp1);
+    println!("tmp2 {:p}", &tmp2);
     print_sum(1, 2);
 }
 
 fn print_sum(left: i32, right: i32) {
     let sum = left + right;
+    println!("sum {:p}", &sum);
     print(sum);
 }
 
-fn print(_value: i32) {
+fn print(value: i32) {
+    println!("value {:p}", &value);
     unsafe { print_stack_trace() };
 }
 
@@ -40,7 +45,7 @@ unsafe fn print_stack_trace() {
     while fp != core::ptr::null() {
         let saved_ra = *fp.sub(1);
         let saved_fp = *fp.sub(2);
-        println!("ra = 0x{:016x}, fp = 0x{:016x}", saved_ra, saved_fp);
+        println!("ra = 0x{:08x}, fp = 0x{:08x}", saved_ra, saved_fp);
 
         fp = saved_fp as *const usize
     }
