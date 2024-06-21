@@ -8,35 +8,70 @@ use core::arch::asm;
 
 #[no_mangle]
 fn main() -> i32 {
-    foo();
+    unsafe {
+        println!("");
+        println!("main");
+        print_stack_trace()
+    };
+
+    a();
     0
 }
 
-fn foo() {
-    let tmp = 0;
-    println!("tmp {:p}", &tmp);
-    bar();
+#[no_mangle]
+fn a() {
+    unsafe {
+        println!("");
+        println!("a");
+        print_stack_trace()
+    };
+
+    b();
 }
 
-fn bar() {
-    let tmp1 = 1;
-    let tmp2 = 2;
-    println!("tmp1 {:p}", &tmp1);
-    println!("tmp2 {:p}", &tmp2);
-    print_sum(1, 2);
+#[no_mangle]
+fn b() {
+    unsafe {
+        println!("");
+        println!("b");
+        print_stack_trace()
+    };
+
+    c();
 }
 
-fn print_sum(left: i32, right: i32) {
-    let sum = left + right;
-    println!("sum {:p}", &sum);
-    print(sum);
+#[no_mangle]
+fn c() {
+    unsafe {
+        println!("");
+        println!("c");
+        print_stack_trace()
+    };
+
+    d();
 }
 
-fn print(value: i32) {
-    println!("value {:p}", &value);
-    unsafe { print_stack_trace() };
+#[no_mangle]
+fn d() {
+    unsafe {
+        println!("");
+        println!("d");
+        print_stack_trace()
+    };
+
+    e();
 }
 
+#[no_mangle]
+fn e() {
+    unsafe {
+        println!("");
+        println!("e");
+        print_stack_trace()
+    };
+}
+
+#[inline(always)]
 unsafe fn print_stack_trace() {
     let mut fp: *const usize;
     unsafe { asm!("mv {}, fp", out(reg) fp) };
